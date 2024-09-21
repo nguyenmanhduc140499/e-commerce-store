@@ -1,0 +1,16 @@
+mutation CreateUser($createUserInput: CreateUserInput!) {
+  createUser(createUserInput: $createUserInput) {
+    code
+    success
+    message
+    user {
+      _id
+      clerkId
+      email
+      name
+      wishlist
+      createdAt
+      updatedAt
+    }
+  }
+}

@@ -1,0 +1,16 @@
+query GetUserDetail($getUserInput: GetUserInput!) {
+  getUserDetail(getUserInput: $getUserInput) {
+    code
+    success
+    message
+    user {
+      _id
+      clerkId
+      email
+      name
+      wishlist
+      createdAt
+      updatedAt
+    }
+  }
+}

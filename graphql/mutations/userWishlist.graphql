@@ -1,0 +1,16 @@
+mutation UserWishlist($userWishlistInput: UserWishlistInput!) {
+  userWishlist(userWishlistInput: $userWishlistInput) {
+    code
+    success
+    message
+    user {
+      _id
+      clerkId
+      email
+      name
+      wishlist
+      createdAt
+      updatedAt
+    }
+  }
+}

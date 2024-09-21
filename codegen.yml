@@ -1,0 +1,10 @@
+overwrite: true
+schema: "http://localhost:4000/graphql"
+documents: "graphql/**/*.graphql"
+generates:
+  generated/graphql.tsx:
+    plugins: ["typescript", "typescript-operations","typescript-react-apollo"]
+    config:
+      withHooks: true                  # Ensure this is true to generate hooks like useQuery and useMutation
+      withComponent: false             # Optional: if you don't need class-based components
+      withHOC: false
