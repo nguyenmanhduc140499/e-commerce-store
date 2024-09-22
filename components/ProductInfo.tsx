@@ -95,10 +95,8 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
           className="outline text-base-bold py-3 rounded-lg hover:bg-black hover:text-white"
           onClick={() => {
             if (!user) {
-              console.log("123");
               router.push("/sign-in");
             } else {
-              console.log("456");
               cart.addItem({
                 item: productInfo,
                 quantity,

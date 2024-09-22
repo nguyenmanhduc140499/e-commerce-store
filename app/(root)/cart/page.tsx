@@ -79,7 +79,7 @@ const Cart = () => {
         customer.address = values.address;
         customer.phone = values.phone;
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/zalopay/checkout`,
+          `${process.env.NEXT_PUBLIC_API_ADMIN_URL}/zalopay/checkout`,
           {
             method: "POST",
             body: JSON.stringify({ cartItems: itemData, customer }),
