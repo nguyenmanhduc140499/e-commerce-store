@@ -18,8 +18,10 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
 
   return (
     <div className="max-w-[400px] flex flex-col gap-4">
-      <div className="flex justify-between items-center">
-        <p className="text-heading3-bold">{productInfo.title}</p>
+      <div className="flex justify-between">
+        <p className="text-heading3-bold border border-transparent pr-5">
+          {productInfo.title}
+        </p>
         <HeartProcess product={productInfo} />
       </div>
 

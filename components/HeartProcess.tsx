@@ -15,6 +15,7 @@ const HeartProcess = ({ product, updateSignedInUser }: HeartProcessProps) => {
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const [signedInUser, setSignedInUser] = useState<UserType | null>(null);
   const customer: any = {
     clerkId: user?.id,
@@ -68,7 +69,12 @@ const HeartProcess = ({ product, updateSignedInUser }: HeartProcessProps) => {
   };
   return (
     <button onClick={handleLike}>
-      <Heart fill={`${isLiked ? "red" : "white"}`} />
+      <Heart
+        color={isHovered ? "red" : "black"}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        fill={`${isLiked ? "red" : "white"}`}
+      />
     </button>
   );
 };
