@@ -16,6 +16,12 @@ const Navbar = () => {
   const [dropdownMenu, setDropdownMenu] = useState(false);
   const [query, setQuery] = useState("");
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter" && query.trim() !== "") {
+      router.push(`/search/${query}`);
+    }
+  };
+
   return (
     <div className="sticky top-0 z-10 py-2 px-10 flex gap-2 justify-between items-center bg-white max-sm:px-2">
       <Link href="/">
@@ -52,6 +58,7 @@ const Navbar = () => {
           className="outline-none max-sm:max-w-[120px]"
           placeholder="Search..."
           value={query}
+          onKeyDown={handleKeyDown}
           onChange={e => setQuery(e.target.value)}
         />
         <button
