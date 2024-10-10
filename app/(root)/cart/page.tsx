@@ -12,6 +12,7 @@ import { useState } from "react";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
   address: z.string().min(2).max(100).trim(),
@@ -31,6 +33,7 @@ const Cart = () => {
   const router = useRouter();
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
   const total = cart.cartItems.reduce(
     (acc, cartItem) => acc + cartItem.item.price * cartItem.quantity,
     0
@@ -46,6 +49,9 @@ const Cart = () => {
   const itemData = cart.cartItems.map(element => {
     return {
       item: element.item._id,
+      title: element.item.title,
+      unitPrice: element.item.price,
+      imageUrl: element.item.media[0],
       quantity: element.quantity,
       color: element.color,
       size: element.size,
@@ -70,6 +76,11 @@ const Cart = () => {
     }
   };
 
+  const handlePaymentChange = (paymentMethod: string) => {
+    // Allow only one payment method to be selected
+    setSelectedPayment(prev => (prev === paymentMethod ? null : paymentMethod));
+  };
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       if (!user) {
@@ -78,17 +89,32 @@ const Cart = () => {
         setLoading(true);
         customer.address = values.address;
         customer.phone = values.phone;
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_ADMIN_URL}/api/zalopay/checkout`,
-          {
-            method: "POST",
-            body: JSON.stringify({ cartItems: itemData, customer }),
-          }
-        );
+        if (selectedPayment === "zaloPay") {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_ADMIN_URL}/api/zalopay/checkout`,
+            {
+              method: "POST",
+              body: JSON.stringify({ cartItems: itemData, customer }),
+            }
+          );
 
-        setLoading(false);
-        const data = await res.json();
-        window.location.href = data.order_url;
+          setLoading(false);
+          const data = await res.json();
+          window.location.href = data.order_url;
+        }
+        if (selectedPayment === "momo") {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_ADMIN_URL}/api/momopay/checkout`,
+            {
+              method: "POST",
+              body: JSON.stringify({ cartItems: itemData, customer }),
+            }
+          );
+
+          setLoading(false);
+          const data = await res.json();
+          window.location.href = data.shortLink;
+        }
       }
     } catch (err) {
       console.log("[checkout_POST]", err);
@@ -201,12 +227,56 @@ const Cart = () => {
               )}
             />
 
+            <div className="space-y-2">
+              <FormLabel>Choose Payment Method</FormLabel>
+              <div className="flex flex-row place-items-center space-x-3 space-y-0 rounded-md border p-2 shadow">
+                <Checkbox
+                  checked={selectedPayment === "zaloPay"}
+                  onCheckedChange={() => handlePaymentChange("zaloPay")}
+                ></Checkbox>
+                <Image
+                  src="/zalopay.jpg"
+                  width={60}
+                  height={60}
+                  alt="product"
+                  className="rounded-lg w-12 h-12 object-cover"
+                />
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Pay with ZaloPay</FormLabel>
+                  <FormDescription>
+                    You can use ZaloPay app to pay your order
+                  </FormDescription>
+                </div>
+              </div>
+
+              <div className="flex flex-row place-items-center space-x-3 space-y-0 rounded-md border p-2 shadow">
+                <Checkbox
+                  checked={selectedPayment === "momo"}
+                  onCheckedChange={() => handlePaymentChange("momo")}
+                ></Checkbox>
+                <Image
+                  src="/momo.png"
+                  width={60}
+                  height={60}
+                  alt="product"
+                  className="rounded-lg w-12 h-12 object-cover"
+                />
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Pay with MoMo</FormLabel>
+                  <FormDescription>
+                    You can use MoMo app to pay your order
+                  </FormDescription>
+                </div>
+              </div>
+            </div>
+
             <div className="flex gap-10">
               <Button
                 type="submit"
+                disabled={!selectedPayment}
                 className="border-2 rounded-lg text-body-bold bg-white py-3 w-full hover:bg-black hover:text-white"
               >
-                Process to checkout
+                Proceed to Payment
               </Button>
             </div>
           </form>
