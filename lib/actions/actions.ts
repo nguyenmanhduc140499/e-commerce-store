@@ -24,7 +24,10 @@ export const getSearchedProducts = async (query: string) => {
 }
 
 export const getOrdersByCustomer = async (customerId: string) => {
-    const ordersByCustomer = await fetch(`${process.env.NEXT_PUBLIC_API_ADMIN_URL}/api/orders/customers/${customerId}`, { cache: "no-cache" })
+    const ordersByCustomer = await fetch(`${process.env.NEXT_PUBLIC_API_ADMIN_URL}/api/orders/customers/${customerId}`, {
+        method: "GET",
+        cache: "reload",
+    })
     return await ordersByCustomer.json()
 }
 
